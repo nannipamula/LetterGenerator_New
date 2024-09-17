@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Quill Editor</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet" />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@latest/image-resize.min.js"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+</head>
+<style>
+    .autotag {
+        background - color: yellow;
+        color: black;
+    }
+
+
+</style>
+<body>
+
+    <form id="myForm2" method="post" enctype="multipart/form-data" action="@Url.Action("ngxQuill", "Home")">
+        <div id="editor">
+            @{
+                if (ViewBag.TemplatePath != null)
+                {
+                    var htmlCode = System.IO.File.ReadAllText($@"wwwroot\Templates\{ViewBag.TemplatePath}.html");
+                    @Html.Raw(htmlCode)
+                }
+            }
+        </div>
+        <label style="margin-left: 31px;">Template Name</label>
+        <label style="padding-left: 139px;">List of Templates</label>
+        <input class="form-control" type="text" name="templateName" id="templatename" value="@ViewBag.TemplatePath" style="margin-top: 2px;width: 235px;margin-left: 32px;">
+        <input type="hidden" name="editorContent" id="editorContent">
+        <button type="submit" class="btn-primary" style="margin-top: 11px;margin-left: 467px;">Submit</button>
+        <select onchange="doIt(this,'@Url.Action("ngxQuill", "Home")')" class="form-control" type="text" id="ModuleName" name="ModuleName" style="margin-top: -79px;margin-left: 281px;width: 251px;">
+
+            @if (ViewBag.ListOfTemplates != null)
+            {
+                @foreach (var item in ViewBag.ListOfTemplates)
+                {
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(item);
+                    <option>@fileName</option>
+                }
+            }
+
+        </select>
+    </form>
+
+    <script>
+
+        function doIt(item, baseUrl) {
+            console.log(baseUrl);
+            window.location.href = baseUrl + '?ModuleName=' + item.value;
+        }
+
+        var quill = new Quill('#editor', {
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'font': [] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link', 'image', 'video', 'formula'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                    [{ 'script': 'sub' }, { 'script': 'super' }],
+                    [{ 'direction': 'rtl' }, { 'clean': 'removeFormat' }]
+                ],
+                imageResize: {
+                    displaySize: true,
+                    modules: ['Resize', 'DisplaySize', 'Toolbar'],
+                    autotag: {
+                        matches: ["#tag1", "#tag2", "#tag3"]
+                    }
+                }
+            },
+            formats: [
+                'header', 'font', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'align',
+                'link', 'image', 'video', 'formula', 'list', 'bullet', 'indent', 'script', 'direction', 'clean'
+            ],
+            theme: 'snow',
+            // Font names to include in the font dropdown
+            fontNames: ['Arial', 'Helvetica', 'Times New Roman', 'Times', 'Courier New', 'Courier', 'Verdana', 'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Comic Sans MS', 'Trebuchet MS', 'Arial Black', 'Impact', 'Lucida Sans Unicode', 'Tahoma', 'Lucida Console'],
+            // Default font name
+            defaultFontName: 'Arial'
+        });
+
+        // Submit event listener
+        document.getElementById('myForm2').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get HTML content of the Quill editor
+            var content = document.getElementById('editor').innerHTML;
+            var templaneName = document.getElementById("templatename").value;
+            var moduleName = document.getElementById("ModuleName").value;
+            // Send AJAX request to the action method
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Home/ngxQuill');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('content=' + encodeURIComponent(content) + '&templateName=' + templaneName + '&Modulename=' + moduleName);
+        });
+
+        quill.root.style.height = '450px';
+
+        quill.on('text-change', function (delta, oldDelta, source) {
+            if (source === 'user') {
+                var text = quill.getText();
+                var cursorPosition = quill.getSelection().index;
+                if (text.charAt(cursorPosition - 1) === '#') {
+                    var typedKeyword = getTypedKeyword(text, cursorPosition);
+                    console.log(typedKeyword);
+                    var dropdownItems = ['item1', 'item2', 'item3'];
+                    showDropdown(dropdownItems, cursorPosition);
+                }
+
+            }
+        });
+        function getTypedKeyword(text, cursorPosition) {
+            var typedKeyword = '';
+            for (var i = cursorPosition - 2; i >= 0; i--) {
+                if (text.charAt(i) === '#') {
+                    break;
+                } else {
+                    typedKeyword = text.charAt(i) + typedKeyword;
+                }
+            }
+            return typedKeyword;
+        }
+
+        function showDropdown(items, cursorPosition) {
+            console.log(items);
+            var dropdown = document.createElement('div');
+            dropdown.setAttribute('id', 'dropdown');
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = quill.getBounds(cursorPosition).top + 30 + 'px';
+            dropdown.style.left = quill.getBounds(cursorPosition).left + 'px';
+            dropdown.style.backgroundColor = 'white';
+            dropdown.style.border = '1px solid black';
+            dropdown.style.padding = '5px';
+            dropdown.style.zIndex = '100';
+
+            items.forEach(function (item) {
+                var option = document.createElement('div');
+                option.innerHTML = item;
+                option.style.cursor = 'pointer';
+                option.addEventListener('click', function () {
+                    insertItem(item, cursorPosition);
+                    dropdown.parentNode.removeChild(dropdown);
+                });
+                dropdown.appendChild(option);
+            });
+
+            document.body.appendChild(dropdown);
+        }
+
+        function insertItem(item, cursorPosition) {
+            quill.deleteText(cursorPosition - 1, 1);
+            quill.insertText(cursorPosition - 1, item);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Signatures\Exit.html" />
+    <None Include="wwwroot\sampletemplates\Onboarding.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="6.2.1" />
+    <PackageReference Include="itext7.pdfhtml" Version="4.0.5" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.3.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="23.1.0-dev2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lineheight\" />
+    <Folder Include="wwwroot\TemplateSavedPasswords\" />
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
+</Project>

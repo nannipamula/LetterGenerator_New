@@ -1,0 +1,138 @@
+﻿/* Default Light Theme */
+body.light-theme {
+    background-color: white;
+    color: black;
+}
+
+/* Dark Theme */
+body.dark-theme {
+    background-color: #121212;
+    color: white;
+}
+
+.navbar {
+    padding: 10px;
+    text-align: right;
+}
+
+/* Toggle Button Style */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+/* Rounded slider */
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+body.dark-theme label {
+    color: white; /* Ensure labels are visible in dark mode */
+    background-color: transparent; /* Keep background transparent */
+    font-weight: bold; /* Optional: Makes labels stand out more */
+}
+
+/* Dark Theme Styling for all Components */
+body.dark-theme select, /* Dropdowns */
+body.dark-theme textarea, /* Textareas */
+body.dark-theme input[type="text"], /* Text inputs */
+body.dark-theme input[type="password"], /* Password inputs */
+body.dark-theme table, /* Tables */
+body.dark-theme .ck-editor__editable_inline, /* CKEditor Editable Area */
+body.dark-theme .button { /* Buttons */
+    background-color: #2a2a2a;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-theme table {
+    border: 1px solid #444;
+    color: white;
+    background-color: #1a1a1a; /* Ensure table background is dark */
+}
+
+body.dark-theme th, /* Table Headers */
+body.dark-theme td { /* Table Data */
+    border: 1px solid #444;
+    padding: 10px;
+    color: white;
+    background-color: #2a2a2a; /* Ensure rows have dark background */
+}
+
+body.dark-theme th { /* Table Headers */
+    background-color: #333; /* Slightly lighter for headers */
+}
+
+body.dark-theme option { /* Dropdown options */
+    background-color: #2a2a2a;
+    color: white;
+}
+
+/* Exclude Labels from Dark Theme */
+body.dark-theme label {
+    color: black; /* Labels will remain black or default color */
+}
+
+/* Placeholder Styling for Dark Theme */
+body.dark-theme ::placeholder {
+    color: #aaa;
+}
+
+/* CKEditor Toolbar Background for Dark Mode */
+body.dark-theme .ck-toolbar {
+    background-color: #2a2a2a;
+    color: white;
+}
+
+/* Focus and Hover States */
+body.dark-theme input[type="text"]:focus,
+body.dark-theme select:focus,
+body.dark-theme textarea:focus,
+body.dark-theme button:focus {
+    border-color: #2196F3;
+    outline: none;
+}
+
+
