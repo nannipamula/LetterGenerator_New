@@ -378,10 +378,17 @@ namespace Template.Controllers
             List<string> distinctListHeaders = headers.Distinct().ToList();
             finalValuesfromGrid = finalValuesfromGrid.Where(s => !string.IsNullOrEmpty(s)).ToArray();
 
-            for (int i = 0; i < finalValuesfromGrid.Length; i++)
-            {
-                html = html.Replace("$" + headers[i], finalValuesfromGrid[i]);
-            }
+            try
+               {
+                    for (int i = 0; i < finalValuesfromGrid.Length; i++)
+                    {
+                        html = html.Replace("$" + headers[i], finalValuesfromGrid[i]);
+                    }
+                }
+                catch
+                {
+                
+                }
 
             // Create a new PDF document
             PdfDocument document = new PdfDocument();
