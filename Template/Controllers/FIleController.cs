@@ -18,7 +18,7 @@ namespace Template.Controllers
         public IActionResult Login(string username, string password)
         {
             // This is a simple example, replace with proper user validation logic
-            if (username == "admin" && password == "123")
+            if (username == "ElixirUser" && password == "LGPass123!")
             {
                 var claims = new List<Claim>
             {
