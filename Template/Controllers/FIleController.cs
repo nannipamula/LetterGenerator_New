@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System;
 
 namespace Template.Controllers
 {
@@ -11,25 +15,40 @@ namespace Template.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string userName, string passWord)
+        public IActionResult Login(string username, string password)
         {
-            // Hardcoded credentials (for demo purposes)
-            string hardcodedUserName = "admin";
-            string hardcodedPassword = "123";
-
-            // Check if the credentials are correct
-            if (userName == hardcodedUserName && passWord == hardcodedPassword)
+            // This is a simple example, replace with proper user validation logic
+            if (username == "admin" && password == "123")
             {
-                // Redirect to Index if the login is successful
-                return RedirectToAction("LetterGenerate", "Home");
+                var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, username)
+            };
+
+                var claimsIdentity = new ClaimsIdentity(claims, "SessionAuthScheme");
+
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                };
+
+                HttpContext.SignInAsync("SessionAuthScheme", new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                return RedirectToAction("Index", "Home");
             }
 
-            // If login fails, set an error message and return to login view
-            ViewBag.ErrorMessage = "Invalid username or password!";
+            ViewBag.ErrorMessage = "Invalid credentials";
             return View();
         }
 
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync("SessionAuthScheme");
+            return RedirectToAction("Login", "File");
+        }
 
-        
+
+
     }
 }
