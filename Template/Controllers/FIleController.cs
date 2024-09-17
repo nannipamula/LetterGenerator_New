@@ -35,7 +35,7 @@ namespace Template.Controllers
 
                 HttpContext.SignInAsync("SessionAuthScheme", new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LetterGenerate", "Home");
             }
 
             ViewBag.ErrorMessage = "Invalid credentials";
