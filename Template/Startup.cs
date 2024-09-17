@@ -35,6 +35,20 @@ namespace Template
                                .AllowAnyHeader();
                     });
             });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+                options.Cookie.HttpOnly = true; // Ensure session cookie is accessible only by the server
+                options.Cookie.IsEssential = true; // Make the session cookie essential
+            });
+
+            // Add Authentication and Authorization
+            services.AddAuthentication("SessionAuthScheme")
+                .AddCookie("SessionAuthScheme", options =>
+                {
+                    options.LoginPath = "/File/Login"; // Redirect to login page
+                    options.AccessDeniedPath = "/File/Login"; // Handle access denied cases
+                });
             services.Configure<IISServerOptions>(options =>
             {
                 options.MaxRequestBodySize = int.MaxValue;
@@ -58,7 +72,11 @@ namespace Template
             app.UseStaticFiles();
             app.UseCors("AllowAllOrigins"); // Apply CORS policy
             app.UseRouting();
-            app.UseAuthorization();
+            app.UseAuthentication(); // Add Authentication
+            app.UseAuthorization();  // Add Authorization
+
+            app.UseSession(); // Use Session
+
 
             app.UseEndpoints(endpoints =>
             {
